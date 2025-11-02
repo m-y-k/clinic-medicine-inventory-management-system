@@ -1,0 +1,40 @@
+package com.clinicapp.controller;
+
+import com.clinicapp.model.User;
+import com.clinicapp.security.JwtUtil;
+import com.clinicapp.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin
+public class AuthController {
+    @Autowired private UserService userService;
+    @Autowired private JwtUtil jwtUtil;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody User user) {
+        User saved = userService.register(user);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
+        String username = body.get("username");
+        String password = body.get("password");
+
+        User user = userService.findByUsername(username);
+        if (user != null && userService.verifyPassword(password, user.getPassword())) {
+            String token = jwtUtil.generateToken(username);
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(401).body("Invalid credentials");
+    }
+}
