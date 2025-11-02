@@ -16,7 +16,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/patients/**", "/api/appointments/**"
-                                , "/api/appointments").permitAll()
+                                , "/api/appointments", "/api/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(); // for simple testing with Postman or browser
