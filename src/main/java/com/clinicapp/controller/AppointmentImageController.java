@@ -46,12 +46,12 @@ public class AppointmentImageController {
                 AppointmentImage ai = new AppointmentImage();
                 ai.setId(UUID.randomUUID().toString());
                 ai.setKey(objectKey);
-                ai.setThumbnailKey(thumbKey);
+                ai.setThumbnailKey(thumbKey.replace(".mp4", ".jpg"));
                 ai.setMimeType(file.getContentType());
                 ai.setSize(file.getSize());
                 // we can create a presigned URL valid for e.g., 7 days
                 ai.setUrl(storageService.getPresignedUrl(objectKey, 7 * 24 * 3600));
-                ai.setThumbnailUrl(storageService.getPresignedUrl(thumbKey, 7 * 24 * 3600));
+                ai.setThumbnailUrl(storageService.getPresignedUrl(thumbKey.replace(".mp4", ".jpg"), 7 * 24 * 3600));
                 appt.getImages().add(ai);
                 added.add(ai);
             } catch (Exception ex) {

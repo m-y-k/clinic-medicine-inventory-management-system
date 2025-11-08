@@ -93,7 +93,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if you prefer Gson -->
+			<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson for Gson -->
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
@@ -105,11 +105,20 @@
 			<version>8.5.4</version>
 		</dependency>
 
+<!--		Create thumbnail for images-->
 		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
 			<version>0.4.18</version>
 		</dependency>
+
+<!--		create thumbnail for videos-->
+		<dependency>
+			<groupId>org.jcodec</groupId>
+			<artifactId>jcodec-javase</artifactId>
+			<version>0.2.5</version>
+		</dependency>
+
 
 	</dependencies>
 
