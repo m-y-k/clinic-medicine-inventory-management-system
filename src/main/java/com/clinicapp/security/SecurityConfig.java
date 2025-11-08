@@ -15,8 +15,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/patients/**", "/api/appointments/**"
-                                , "/api/appointments", "/api/images/**").permitAll()
+                        .requestMatchers(
+                                "/api/patients/**",
+                                "/api/appointments/**",
+                                "/api/images/**",
+                                "/api/medicines/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(); // for simple testing with Postman or browser

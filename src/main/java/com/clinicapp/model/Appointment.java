@@ -24,6 +24,8 @@ public class Appointment {
     private Date createdAt;
     private Date updatedAt;
 
+    private List<Prescription> prescriptions;
+
     public Appointment() {
         this.createdAt = new Date();
         this.updatedAt = new Date();
@@ -100,6 +102,11 @@ public class Appointment {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public List<Prescription> getPrescriptions() { return prescriptions; }
+    public void setPrescriptions(List<Prescription> prescriptions) { this.prescriptions = prescriptions; }
+
+
 // Getters & setters
     // ... (generate for all fields)
 }
