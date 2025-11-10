@@ -11,6 +11,7 @@ public class User {
     private String id;
     private String username;
     private String password;
+    private String role; // ADMIN, DOCTOR, PHARMACIST, STAFF
 
     public String getId() {
         return id;
@@ -36,17 +37,8 @@ public class User {
         this.password = password;
     }
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
-
-    private Set<String> roles; // e.g. ["DOCTOR","ADMIN"]
-
-    // getters & setters
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
 }
 
