@@ -2,25 +2,53 @@ package com.clinicapp.service;
 
 import com.clinicapp.model.User;
 import com.clinicapp.repository.UserRepository;
+import com.clinicapp.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Map;
 
 @Service
 public class UserService {
-    @Autowired private UserRepository repo;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Autowired
+    private UserRepository userRepository;
 
-    public User register(User user) {
-        user.setPassword(encoder.encode(user.getPassword()));
-        return repo.save(user);
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+    public Map<String, Object> register(@RequestBody User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            return Map.of("message", "Username already exists!");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return Map.of("message", "User registered successfully");
     }
 
-    public User findByUsername(String username) {
-        return repo.findByUsername(username).orElse(null);
-    }
+    public Map<String, Object> login(@RequestBody Map<String, String> body) {
+        String username = body.get("username");
+        String password = body.get("password");
 
-    public boolean verifyPassword(String raw, String encoded) {
-        return encoder.matches(raw, encoded);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        String token = jwtUtil.generateToken(username, user.getRole());
+        return Map.of(
+                "token", token,
+                "role", user.getRole(),
+                "username", username
+        );
     }
 }

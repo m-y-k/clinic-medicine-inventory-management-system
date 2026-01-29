@@ -3,6 +3,9 @@ package com.clinicapp.service;
 import com.clinicapp.model.Patient;
 import com.clinicapp.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -14,10 +17,14 @@ public class PatientService {
     @Autowired
     private PatientRepository patientRepository;
 
-    public Patient createPatient(Patient patient) {
+    public ResponseEntity<?> createPatient(Patient patient) {
+        Optional<Patient> optionalPatient = patientRepository.findByPhone(patient.getPhone());
+        if (optionalPatient.isPresent()) {
+            return new ResponseEntity<>( optionalPatient.get(), HttpStatus.BAD_REQUEST );
+        }
         patient.setCreatedAt(new Date());
         patient.setUpdatedAt(new Date());
-        return patientRepository.save(patient);
+        return new ResponseEntity<>( patientRepository.save(patient), HttpStatusCode.valueOf(200) );
     }
 
     public List<Patient> getAllPatients() {

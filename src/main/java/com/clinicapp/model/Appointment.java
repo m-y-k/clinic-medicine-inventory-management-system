@@ -107,6 +107,4 @@ public class Appointment {
     public void setPrescriptions(List<Prescription> prescriptions) { this.prescriptions = prescriptions; }
 
 
-// Getters & setters
-    // ... (generate for all fields)
 }

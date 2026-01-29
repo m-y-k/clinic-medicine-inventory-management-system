@@ -27,7 +27,6 @@ public class Patient {
     }
 
     // Getters & setters
-    // (Use Lombok @Data to avoid boilerplate if you have it)
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

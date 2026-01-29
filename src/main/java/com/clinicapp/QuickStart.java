@@ -12,18 +12,18 @@ public class QuickStart {
     public static void main( String[] args ) {
 
         // Replace the placeholder with your MongoDB deployment's connection string
-        String uri = "mongodb+srv://yusuf:Yusuf123@doctorclinic.lmrnhan.mongodb.net/?retryWrites=true&w=majority&appName=DoctorClinic";
-
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
-            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
-            MongoCollection<Document> collection = database.getCollection("movies");
-
-            Document doc = collection.find(eq("title", "Back to the Future")).first();
-            if (doc != null) {
-                System.out.println(doc.toJson());
-            } else {
-                System.out.println("No matching documents found.");
-            }
-        }
+//        String uri = "mongodb+srv://yusuf:Yusuf123@doctorclinic.lmrnhan.mongodb.net/?retryWrites=true&w=majority&appName=DoctorClinic";
+//
+//        try (MongoClient mongoClient = MongoClients.create(uri)) {
+//            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
+//            MongoCollection<Document> collection = database.getCollection("movies");
+//
+//            Document doc = collection.find(eq("title", "Back to the Future")).first();
+//            if (doc != null) {
+//                System.out.println(doc.toJson());
+//            } else {
+//                System.out.println("No matching documents found.");
+//            }
+//        }
     }
 }
