@@ -1,5 +1,7 @@
 package com.clinicapp.service;
 
+import com.clinicapp.model.AppointmentImage;
+import com.clinicapp.repository.AppointmentImageRepository;
 import net.coobird.thumbnailator.Thumbnails;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.common.model.Picture;
@@ -11,12 +13,16 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Optional;
 
 @Service
 public class ImageProcessingService {
 
     @Autowired
     private StorageService storageService;
+
+    @Autowired
+    private AppointmentImageRepository appointmentImageRepository;
 
     @Async
     public void generateAndUploadThumbnail(String appointmentId, String originalKey, String thumbnailKey) {
@@ -104,4 +110,6 @@ public class ImageProcessingService {
         int lastDot = key.lastIndexOf('.');
         return (lastDot != -1) ? key.substring(lastDot + 1) : "";
     }
+
+
 }

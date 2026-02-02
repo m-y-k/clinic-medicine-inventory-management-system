@@ -1,5 +1,7 @@
 package com.clinicapp.controller;
 
+import com.clinicapp.dto.request.AppointmentRequest;
+import com.clinicapp.dto.response.AppointmentResponse;
 import com.clinicapp.model.Appointment;
 import com.clinicapp.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,38 +18,31 @@ public class AppointmentController {
     private AppointmentService service;
 
     @PostMapping
-    public ResponseEntity<Appointment> create(@RequestBody Appointment appointment) {
-        return ResponseEntity.ok(service.createAppointment(appointment));
+    public ResponseEntity<AppointmentResponse> create(@RequestBody AppointmentRequest request) {
+        return ResponseEntity.ok(service.createAppointment(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Appointment>> getAll() {
+    public ResponseEntity<List<AppointmentResponse>> getAll() {
         return ResponseEntity.ok(service.getAllAppointments());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable String id) {
-        Appointment appointment = service.getById(id).get();
-        if (appointment != null)
-            return ResponseEntity.ok(appointment);
-        else
-            return ResponseEntity.status(404).body("Appointment not found");
+    public ResponseEntity<AppointmentResponse> get(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, @RequestBody Appointment appointment) {
-        Appointment updated = service.updateAppointment(id, appointment);
-        if (updated != null)
-            return ResponseEntity.ok(updated);
-        else
-            return ResponseEntity.status(404).body("Appointment not found");
+    public ResponseEntity<AppointmentResponse> update(@PathVariable Long id,
+                                                      @RequestBody AppointmentRequest request) {
+        return ResponseEntity.ok(service.updateAppointment(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        if (service.deleteAppointment(id))
-            return ResponseEntity.ok("Deleted successfully");
-        else
-            return ResponseEntity.status(404).body("Appointment not found");
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.deleteAppointment(id);
+        return ResponseEntity.noContent().build();
     }
+
 }
+

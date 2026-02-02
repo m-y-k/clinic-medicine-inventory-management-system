@@ -15,38 +15,35 @@ public class MedicineService {
     @Autowired
     private MedicineRepository medicineRepository;
 
-    // Create or add medicine
     public Medicine addMedicine(Medicine medicine) {
-        medicine.setCreatedAt(new Date());
-        medicine.setUpdatedAt(new Date());
         return medicineRepository.save(medicine);
     }
 
-    // List all medicines
     public List<Medicine> getAllMedicines() {
         return medicineRepository.findAll();
     }
 
-    // Get medicine by ID
-    public Optional<Medicine> getMedicineById(String id) {
+    public Optional<Medicine> getMedicineById(Long id) {
         return medicineRepository.findById(id);
     }
 
-    // Update medicine
-    public Medicine updateMedicine(String id, Medicine updatedMedicine) {
+    public Medicine updateMedicine(Long id, Medicine updated) {
+
         return medicineRepository.findById(id).map(medicine -> {
-            medicine.setName(updatedMedicine.getName());
-            medicine.setUnit(updatedMedicine.getUnit());
-            medicine.setAltUnit(updatedMedicine.getAltUnit());
-            medicine.setPrice(updatedMedicine.getPrice());
-            medicine.setStockQuantity(updatedMedicine.getStockQuantity());
-            medicine.setUpdatedAt(new Date());
+
+            medicine.setName(updated.getName());
+            medicine.setUnit(updated.getUnit());
+            medicine.setAltUnit(updated.getAltUnit());
+            medicine.setPrice(updated.getPrice());
+            medicine.setStockQuantity(updated.getStockQuantity());
+
             return medicineRepository.save(medicine);
-        }).orElseThrow(() -> new RuntimeException("Medicine not found with id: " + id));
+
+        }).orElseThrow(() -> new RuntimeException("Medicine not found"));
     }
 
-    // Delete medicine
-    public boolean deleteMedicine(String id) {
+    public boolean deleteMedicine(Long id) {
+
         if (medicineRepository.existsById(id)) {
             medicineRepository.deleteById(id);
             return true;

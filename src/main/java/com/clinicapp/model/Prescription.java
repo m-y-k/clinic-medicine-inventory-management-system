@@ -1,26 +1,63 @@
 package com.clinicapp.model;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "prescriptions")
 public class Prescription {
 
-    private String medicineId;
-    private int quantity;     // number of units prescribed
-    private String dosage;    // e.g., "1 tablet twice a day"
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Prescription() {}
+    @ManyToOne
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
 
-    public Prescription(String medicineId, int quantity, String dosage) {
-        this.medicineId = medicineId;
-        this.quantity = quantity;
-        this.dosage = dosage;
+    @ManyToOne
+    @JoinColumn(name = "medicine_id")
+    private Medicine medicine;
+
+    private int quantity;
+
+    private String dosage;
+
+    public Long getId() {
+        return id;
     }
 
-    // Getters and Setters
-    public String getMedicineId() { return medicineId; }
-    public void setMedicineId(String medicineId) { this.medicineId = medicineId; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public Appointment getAppointment() {
+        return appointment;
+    }
 
-    public String getDosage() { return dosage; }
-    public void setDosage(String dosage) { this.dosage = dosage; }
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
+    public Medicine getMedicine() {
+        return medicine;
+    }
+
+    public void setMedicine(Medicine medicine) {
+        this.medicine = medicine;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getDosage() {
+        return dosage;
+    }
+
+    public void setDosage(String dosage) {
+        this.dosage = dosage;
+    }
 }

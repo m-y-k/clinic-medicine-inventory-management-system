@@ -1,65 +1,76 @@
 package com.clinicapp.model;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Document(collection = "appointments")
+@Entity
+@Table(name = "appointments")
 public class Appointment {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String patientId;  // Reference to Patient
-    private String doctorId;   // Reference to User (doctor)
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
-    private Date scheduledAt;
-    private String status;     // e.g., "scheduled", "completed", "cancelled"
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private User doctor;
+
+    private LocalDateTime scheduledAt;
+
+    private String status;
+
+    @Column(length = 2000)
     private String notes;
 
-    // Images metadata
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AppointmentImage> images;
 
-    private Date createdAt;
-    private Date updatedAt;
-
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Prescription> prescriptions;
 
-    public Appointment() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-    }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getPatientId() {
-        return patientId;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
-    public String getDoctorId() {
-        return doctorId;
+    public User getDoctor() {
+        return doctor;
     }
 
-    public void setDoctorId(String doctorId) {
-        this.doctorId = doctorId;
+    public void setDoctor(User doctor) {
+        this.doctor = doctor;
     }
 
-    public Date getScheduledAt() {
+    public LocalDateTime getScheduledAt() {
         return scheduledAt;
     }
 
-    public void setScheduledAt(Date scheduledAt) {
+    public void setScheduledAt(LocalDateTime scheduledAt) {
         this.scheduledAt = scheduledAt;
     }
 
@@ -79,6 +90,22 @@ public class Appointment {
         this.notes = notes;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public List<AppointmentImage> getImages() {
         return images;
     }
@@ -87,24 +114,11 @@ public class Appointment {
         this.images = images;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public List<Prescription> getPrescriptions() {
+        return prescriptions;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setPrescriptions(List<Prescription> prescriptions) {
+        this.prescriptions = prescriptions;
     }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public List<Prescription> getPrescriptions() { return prescriptions; }
-    public void setPrescriptions(List<Prescription> prescriptions) { this.prescriptions = prescriptions; }
-
-
 }

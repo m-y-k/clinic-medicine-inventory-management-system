@@ -1,22 +1,29 @@
 package com.clinicapp.model;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-
-@Document(collection = "users")
+import jakarta.persistence.*;
+@Entity
+@Table(name = "users")
 public class User {
-    @Id
-    private String id;
-    private String username;
-    private String password;
-    private String role; // ADMIN, DOCTOR, PHARMACIST, STAFF
 
-    public String getId() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    // getters/setters
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -36,8 +43,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public Role getRole() {
+        return role;
+    }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }
-

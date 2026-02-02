@@ -11,13 +11,13 @@ import java.util.List;
 @RequestMapping("/api/patients")
 @CrossOrigin
 public class PatientController {
+
     @Autowired
     private PatientService patientService;
 
     @PostMapping
     public ResponseEntity<?> createPatient(@RequestBody Patient patient) {
-        Patient saved = (Patient) patientService.createPatient(patient).getBody();
-        return ResponseEntity.ok(saved);
+        return patientService.createPatient(patient);
     }
 
     @GetMapping
@@ -26,28 +26,27 @@ public class PatientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPatient(@PathVariable String id) {
-        Patient patient = patientService.getPatientById(id).get();
-        if (patient != null)
-            return ResponseEntity.ok(patient);
-        else
-            return ResponseEntity.status(404).body("Patient not found");
+    public ResponseEntity<?> getPatient(@PathVariable Long id) {
+        return patientService.getPatientById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePatient(@PathVariable String id, @RequestBody Patient patient) {
+    public ResponseEntity<?> updatePatient(@PathVariable Long id, @RequestBody Patient patient) {
         Patient updated = patientService.updatePatient(id, patient);
+
         if (updated != null)
             return ResponseEntity.ok(updated);
-        else
-            return ResponseEntity.status(404).body("Patient not found");
+
+        return ResponseEntity.status(404).body("Patient not found");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePatient(@PathVariable String id) {
+    public ResponseEntity<?> deletePatient(@PathVariable Long id) {
         if (patientService.deletePatient(id))
             return ResponseEntity.ok("Deleted successfully");
-        else
-            return ResponseEntity.status(404).body("Patient not found");
+
+        return ResponseEntity.status(404).body("Patient not found");
     }
 }

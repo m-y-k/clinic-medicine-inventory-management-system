@@ -23,9 +23,9 @@ public class ImageService {
     private String endpoint;
 
     public AppointmentImage uploadImage(MultipartFile file) throws Exception {
+
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        System.out.println(fileName);
-        // Upload to MinIO
+
         minioClient.putObject(
                 PutObjectArgs.builder()
                         .bucket(bucket)
@@ -36,12 +36,12 @@ public class ImageService {
         );
 
         AppointmentImage img = new AppointmentImage();
-        img.setId(UUID.randomUUID().toString());
+
         img.setFileName(fileName);
         img.setMimeType(file.getContentType());
         img.setSize(file.getSize());
         img.setUrl(endpoint + "/" + bucket + "/" + fileName);
-        System.out.println(endpoint + "/" + bucket + "/" + fileName);
+
         return img;
     }
 }

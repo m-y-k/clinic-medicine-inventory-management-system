@@ -16,6 +16,7 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
+    // Extra method for uploading files in general.
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> upload(@RequestPart("file") MultipartFile file) {
         try {

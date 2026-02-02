@@ -44,10 +44,10 @@ public class UserService {
             throw new RuntimeException("Invalid credentials");
         }
 
-        String token = jwtUtil.generateToken(username, user.getRole());
+        String token = jwtUtil.generateToken(username, user.getRole().toString());
         return Map.of(
                 "token", token,
-                "role", user.getRole(),
+                "role", user.getRole().toString(),
                 "username", username
         );
     }

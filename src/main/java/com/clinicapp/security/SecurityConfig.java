@@ -77,13 +77,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
 
                         // Patient module - doctors or admins only
-                        .requestMatchers("/api/patients/**").hasAnyRole("DOCTOR", "ADMIN")
+                        .requestMatchers("/api/patients/**").hasAnyRole("DOCTOR", "STAFF", "ADMIN")
 
                         // Appointment module - doctors or admins only
-                        .requestMatchers("/api/appointments/**").hasAnyRole("DOCTOR", "ADMIN")
+                        .requestMatchers("/api/appointments/**").hasAnyRole("DOCTOR", "STAFF", "ADMIN")
 
                         // Medicine module - staff or admins only
-                        .requestMatchers("/api/medicines/**").hasAnyRole("STAFF", "ADMIN")
+                        .requestMatchers("/api/medicines/**").hasAnyRole("PHARMACIST", "ADMIN")
 
                         // Image upload endpoints (requires authentication)
                         .requestMatchers("/api/images/**").authenticated()

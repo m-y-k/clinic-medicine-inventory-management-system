@@ -26,22 +26,22 @@ public class MedicineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Medicine> getMedicine(@PathVariable String id) {
+    public ResponseEntity<Medicine> getMedicine(@PathVariable Long id) {
         return medicineService.getMedicineById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Medicine> updateMedicine(@PathVariable String id, @RequestBody Medicine medicine) {
+    public ResponseEntity<Medicine> updateMedicine(@PathVariable Long id, @RequestBody Medicine medicine) {
         return ResponseEntity.ok(medicineService.updateMedicine(id, medicine));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMedicine(@PathVariable String id) {
+    public ResponseEntity<?> deleteMedicine(@PathVariable Long id) {
         if (medicineService.deleteMedicine(id))
             return ResponseEntity.ok("Deleted successfully");
-        else
-            return ResponseEntity.status(404).body("Medicine not found");
+
+        return ResponseEntity.status(404).body("Medicine not found");
     }
 }

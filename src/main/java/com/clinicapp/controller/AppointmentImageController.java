@@ -23,7 +23,7 @@ public class AppointmentImageController {
     @Autowired private ImageProcessingService imageProcessingService;
 
     @PostMapping(value = "/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadImages(@PathVariable("id") String appointmentId,
+    public ResponseEntity<?> uploadImages(@PathVariable("id") Long appointmentId,
                                           @RequestPart("files") MultipartFile[] files) {
         Optional<Appointment> opt = appointmentRepository.findById(appointmentId);
         if (!opt.isPresent()) return ResponseEntity.status(404).body("Appointment not found");
@@ -34,17 +34,19 @@ public class AppointmentImageController {
         List<AppointmentImage> added = new ArrayList<>();
         for (MultipartFile file : files) {
             try {
-                String objectKey = storageService.generateObjectKey(appointmentId, file.getOriginalFilename());
+                String objectKey = storageService.generateObjectKey(appointmentId.toString(), file.getOriginalFilename());
+
                 storageService.upload(file, objectKey);
 
                 // generate a thumbnail key (same folder)
                 String thumbKey = objectKey.replaceFirst("(\\.[^.]+)$", "_thumb$1");
                 // async thumbnail generation
-                imageProcessingService.generateAndUploadThumbnail(appointmentId, objectKey, thumbKey);
+                imageProcessingService.generateAndUploadThumbnail(appointmentId.toString(), objectKey, thumbKey);
 
                 // create metadata
                 AppointmentImage ai = new AppointmentImage();
-                ai.setId(UUID.randomUUID().toString());
+                ai.setAppointment(appt);
+                ai.setFileName(file.getOriginalFilename());
                 ai.setKey(objectKey);
                 ai.setThumbnailKey(thumbKey.replace(".mp4", ".jpg"));
                 ai.setMimeType(file.getContentType());
@@ -65,7 +67,7 @@ public class AppointmentImageController {
     }
 
     @DeleteMapping("/{id}/images/{imageId}")
-    public ResponseEntity<?> deleteImage(@PathVariable String id, @PathVariable String imageId) {
+    public ResponseEntity<?> deleteImage(@PathVariable Long id, @PathVariable String imageId) {
         Optional<Appointment> opt = appointmentRepository.findById(id);
         if (!opt.isPresent()) return ResponseEntity.status(404).body("Appointment not found");
 
@@ -74,7 +76,7 @@ public class AppointmentImageController {
 
         AppointmentImage toRemove = null;
         for (AppointmentImage ai : appt.getImages()) {
-            if (imageId.equals(ai.getId())) { toRemove = ai; break; }
+            if (imageId.equals(ai.getId().toString())) { toRemove = ai; break; }
         }
         if (toRemove == null) return ResponseEntity.status(404).body("Image not found");
 
