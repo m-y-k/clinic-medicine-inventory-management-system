@@ -33,10 +33,15 @@ public class AppointmentImageController {
 
         List<AppointmentImage> added = new ArrayList<>();
         for (MultipartFile file : files) {
+            if (!file.getContentType().startsWith("image/")) continue; // skipping videos
             try {
                 String objectKey = storageService.generateObjectKey(appointmentId.toString(), file.getOriginalFilename());
 
-                storageService.upload(file, objectKey);
+                MultipartFile compressed = imageProcessingService.compressImageAndVideo(file);
+                System.out.println(file.getOriginalFilename() + "File size: Original v/s Compressed, " + file.getSize() + "/" + compressed.getSize());
+                storageService.upload(compressed, objectKey);
+
+//                storageService.upload(file, objectKey);
 
                 // generate a thumbnail key (same folder)
                 String thumbKey = objectKey.replaceFirst("(\\.[^.]+)$", "_thumb$1");
@@ -46,11 +51,11 @@ public class AppointmentImageController {
                 // create metadata
                 AppointmentImage ai = new AppointmentImage();
                 ai.setAppointment(appt);
-                ai.setFileName(file.getOriginalFilename());
+                ai.setFileName(compressed.getOriginalFilename());
                 ai.setKey(objectKey);
                 ai.setThumbnailKey(thumbKey.replace(".mp4", ".jpg"));
-                ai.setMimeType(file.getContentType());
-                ai.setSize(file.getSize());
+                ai.setMimeType(compressed.getContentType());
+                ai.setSize(compressed.getSize());
                 // we can create a presigned URL valid for e.g., 7 days
                 ai.setUrl(storageService.getPresignedUrl(objectKey, 7 * 24 * 3600));
                 ai.setThumbnailUrl(storageService.getPresignedUrl(thumbKey.replace(".mp4", ".jpg"), 7 * 24 * 3600));

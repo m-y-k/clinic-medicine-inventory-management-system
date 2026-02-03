@@ -2,6 +2,7 @@ package com.clinicapp.service;
 
 import com.clinicapp.model.AppointmentImage;
 import com.clinicapp.repository.AppointmentImageRepository;
+import com.clinicapp.util.InMemoryMultipartFile;
 import net.coobird.thumbnailator.Thumbnails;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.common.model.Picture;
@@ -111,5 +112,65 @@ public class ImageProcessingService {
         return (lastDot != -1) ? key.substring(lastDot + 1) : "";
     }
 
+    public MultipartFile compressImageAndVideo(MultipartFile file) throws Exception {
+
+        String type = file.getContentType();
+
+        if (type == null) {
+            return file;
+        }
+
+        if (type.startsWith("image/")) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            Thumbnails.of(file.getInputStream())
+                    .scale(1.0)
+                    .outputFormat("jpeg")
+                    .outputQuality(0.4f) // compression here
+                    .toOutputStream(baos);
+
+            byte[] bytes = baos.toByteArray();
+
+            return new InMemoryMultipartFile(
+                    file.getName(),
+                    file.getOriginalFilename(),
+                    "image/jpeg",
+                    bytes
+            );
+        } // don't process for videos, as video upload will take higher memory on cloud.
+//        else if (type.startsWith("video/")) {
+//
+//            File input = File.createTempFile("raw_", ".mp4");
+//            File output = File.createTempFile("compressed_", ".mp4");
+//
+//            try {
+//                file.transferTo(input);
+//
+//                new ProcessBuilder(
+//                        "ffmpeg", "-y",
+//                        "-i", input.getAbsolutePath(),
+//                        "-vcodec", "libx264",
+//                        "-crf", "28",
+//                        "-preset", "fast",
+//                        "-acodec", "aac",
+//                        output.getAbsolutePath()
+//                ).start().waitFor();
+//
+//                return new InMemoryMultipartFile(
+//                        file.getName(),
+//                        file.getOriginalFilename(),
+//                        "video/mp4",
+//                        java.nio.file.Files.readAllBytes(output.toPath())
+//                );
+//
+//            } finally {
+//                input.delete();
+//                output.delete();
+//            }
+//        }
+        else {
+            return file;
+        }
+    }
 
 }
