@@ -74,7 +74,10 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests(auth -> auth
                         // Public routes
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**",
+                                                "/swagger-ui/**",
+                                                "/v3/api-docs/**"
+                                        ).permitAll()
 
                         // Patient module - doctors or admins only
                         .requestMatchers("/api/patients/**").hasAnyRole("DOCTOR", "STAFF", "ADMIN")

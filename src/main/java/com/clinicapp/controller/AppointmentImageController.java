@@ -31,6 +31,15 @@ public class AppointmentImageController {
         Appointment appt = opt.get();
         if (appt.getImages() == null) appt.setImages(new ArrayList<>());
 
+        int existingCount = appt.getImages().size();
+        int newFilesCount = files.length;
+
+        // Limit check for 2 Images per Appointment.
+        if (existingCount + newFilesCount > 2) {
+            return ResponseEntity.badRequest().body("Maximum 2 images allowed per appointment. Already uploaded: "
+                            + existingCount + ", trying to add: " + newFilesCount);
+        }
+
         List<AppointmentImage> added = new ArrayList<>();
         for (MultipartFile file : files) {
             if (!file.getContentType().startsWith("image/")) continue; // skipping videos
